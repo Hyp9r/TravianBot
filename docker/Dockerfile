@@ -4,6 +4,21 @@ FROM node:16.2-alpine as development
 # Set the working directory inside the container
 WORKDIR /app
 
+# Set Puppeteer specific environment variables
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+# Install dependencies for running Chromium
+RUN apk update && apk upgrade && \
+    apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
+
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
