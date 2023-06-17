@@ -1,0 +1,14 @@
+version: "3"
+services:
+  app:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      target: development
+    ports:
+      - "3000:4000"
+    volumes:
+    - ./:/app
+    - /app/node_modules
+    command: npm run dev
