@@ -1,7 +1,5 @@
 import {Request, Response} from 'express';
 
-export const getDashboard = (req: Request, res: Response): Response => {
-    return res.json({
-        status: "success",
-    });
+export const getDashboard = (req: Request, res: Response): void => {
+    return res.render('pages/index');
 };

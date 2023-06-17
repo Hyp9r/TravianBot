@@ -25,6 +25,9 @@ COPY package*.json ./
 # Install project dependencies
 RUN npm install
 
+# Install ejs template engine
+RUN npm install ejs
+
 # Copy the rest of the application code
 COPY . .
 
