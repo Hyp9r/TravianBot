@@ -1,5 +1,5 @@
 # Use an official Node.js runtime as the base image
-FROM node:16.2-alpine as development
+FROM --platform=linux/amd64 node:16.3-slim as development
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -7,17 +7,16 @@ WORKDIR /app
 # Set Puppeteer specific environment variables
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+#ENV DISPLAY=$HOST_IP:10.0 
 
 # Install dependencies for running Chromium
-RUN apk update && apk upgrade && \
-    apk add --no-cache \
-    chromium \
-    nss \
-    freetype \
-    freetype-dev \
-    harfbuzz \
-    ca-certificates \
-    ttf-freefont
+RUN echo 'Installing puppeteer dependencies...'
+RUN apt-get update && apt-get install gnupg wget -y && \
+    wget --quiet --output-document=- https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /etc/apt/trusted.gpg.d/google-archive.gpg && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
+    apt-get update && \
+    apt-get install google-chrome-stable -y --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
@@ -27,6 +26,12 @@ RUN npm install
 
 # Install ejs template engine
 RUN npm install ejs
+
+# Install logger
+RUN npm install winston express-winston
+
+# Install fontawesome
+RUN npm install --save @fortawesome/fontawesome-free
 
 # Copy the rest of the application code
 COPY . .
