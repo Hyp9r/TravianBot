@@ -1,10 +1,8 @@
 import {Request, Response} from 'express';
 import Logger from '../logging/logger';
-import TravianClient from '../travian/TravianClient';
-import Tribe from '../travian/model/Tribe';
-import Teuton from '../travian/model/Teuton';
 import TravianService from '../travian/TravianService';
 import CrawlerService from '../crawler/Crawler';
+import Login from '../authentication/model/Login';
 
 class LoginController {
     private travianService: TravianService;

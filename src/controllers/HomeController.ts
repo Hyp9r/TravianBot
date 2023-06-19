@@ -15,7 +15,7 @@ class HomeController {
 
     public async signin(req: Request, res: Response) : Promise<void> {
         Logger.info('Sign in page...');
-        return res.render('pages/signin');
+        return res.render('pages/login');
     }
 }
 
