@@ -39,12 +39,66 @@ class CrawlerService {
         }
     }
 
+    async locateElement(selector : string): Promise<void> {
+        if (!this.page) {
+            throw new Error('Page is not initialized');
+        }
+        const element = await this.page.waitForSelector(selector);
+        const tableElement = await element?.$('table');
+        const tableData = await this.page.evaluate((table) => {
+            const rows = table?.querySelectorAll('tr');
+            const data = [];
+            if (rows === undefined) {
+                return [];
+            }
+            for (const row of rows) {
+                const columns = row.querySelectorAll('td');
+                const rowData = [];
+        
+                for (const column of columns) {
+                    const columnContent = column.textContent;
+                  rowData.push(columnContent?.trim());
+                }
+          
+                data.push(rowData);
+              }
+            return data;
+        }, tableElement);
+        console.log(tableData);
+    }
+
     async readPageData(): Promise<string> {
         if (!this.page) {
             throw new Error('Page is not initialized');
         }
         const pageContent = await this.page.content();
         return pageContent;
+    }
+
+    async postRequest(payload: string) {
+        if (!this.page) {
+            throw new Error('Page is not initialized');
+        }
+        await this.page.setRequestInterception(true);
+
+        this.page.once('request', request => {
+            var data = {
+                'method': 'POST',
+                'postData': payload,
+                'headers': {
+                    ...request.headers(),
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+        };
+
+        request.continue(data);
+
+        // Immediately disable setRequestInterception, or all other requests will hang
+        if (!this.page) {
+            throw new Error('Page is not initialized');
+        }
+        this.page.setRequestInterception(false);
+});
     }
 
     async performPostRequest(url: string, jsonData: Record<string, any>): Promise<void> {

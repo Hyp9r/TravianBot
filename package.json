@@ -37,6 +37,7 @@
     "jquery.nicescroll": "^3.7.6",
     "owl.carousel": "^2.3.4",
     "puppeteer": "^20.7.2",
+    "querystring": "^0.2.1",
     "summernote": "^0.8.11",
     "winston": "^3.9.0"
   }
