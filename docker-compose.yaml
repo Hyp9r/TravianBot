@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 services:
   app:
     container_name: backend
@@ -13,3 +13,27 @@ services:
     - /app/node_modules
     command: npm run dev
     platform: linux/amd64
+    networks:
+      - travian-network
+  mariadb:
+    container_name: db
+    image: mariadb:latest
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+    - mariadb-travian:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - travian-network
+volumes:
+  mariadb-travian:
+    driver: local
+networks:
+  travian-network:
+    driver: bridge

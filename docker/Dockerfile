@@ -33,6 +33,12 @@ RUN npm install winston express-winston
 # Install fontawesome
 RUN npm install --save @fortawesome/fontawesome-free
 
+# Install prisma
+RUN npm install prisma
+
+# Initialize prisma and datasource
+RUN npx prisma init  --datasource-provider mysql
+
 # Copy the rest of the application code
 COPY . .
 
